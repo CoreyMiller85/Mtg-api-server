@@ -101,10 +101,8 @@ const CardSchema = new Schema({
 	},
 });
 
-const Card = mongoose.model("Card", CardSchema);
+CardSchema.plugin(mongoosePaginate);
 
-Card.paginate(query, options)
-	.then((result) => {})
-	.catch((error) => {});
+const Card = mongoose.model("Card", CardSchema);
 
 module.exports = Card;
