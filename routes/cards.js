@@ -11,14 +11,45 @@ const getPagination = (page, size) => {
 	return { limit, offset };
 };
 
+// router.get("/", async (req, res) => {
+// 	const { page, size, name } = req.query;
+// 	var condition = {};
+
+// 	const { limit, offset } = getPagination(page, size);
+
+// 	Card.paginate(condition, { offset, limit })
+// 		.then((data) => {
+// 			res.send({
+// 				totalItems: data.totalDocs,
+// 				cards: data.docs,
+// 				totalPages: data.totalPages,
+// 				currentPage: data.page - 1,
+// 			});
+// 		})
+// 		.catch((err) => {
+// 			res.status(500).send({
+// 				message:
+// 					err.message || "Some error occurred while retrieving tutorials.",
+// 			});
+// 		});
+// });
+
 router.get("/", async (req, res) => {
 	const { page, size, name } = req.query;
-	var condition = {};
+	var condition = name
+		? {
+				name: { $regex: new RegExp(name), $options: "i" },
+				booster: "true",
+				promo: "false",
+				nonfoil: "true",
+		  }
+		: {};
 
 	const { limit, offset } = getPagination(page, size);
 
 	Card.paginate(condition, { offset, limit })
 		.then((data) => {
+			console.log(data);
 			res.send({
 				totalItems: data.totalDocs,
 				cards: data.docs,
@@ -32,18 +63,16 @@ router.get("/", async (req, res) => {
 					err.message || "Some error occurred while retrieving tutorials.",
 			});
 		});
-});
 
-router.get("/:name", async (req, res) => {
-	let found = await Card.find(
-		{
-			name: { $regex: new RegExp(req.params.name), $options: "i" },
-			booster: true,
-		},
-		null,
-		{ sort: { name: 1 } }
-	).skip(10);
-	res.send(found);
+	// let found = await Card.find(
+	// 	{
+	// 		name: { $regex: new RegExp(req.params.name), $options: "i" },
+	// 		booster: true,
+	// 	},
+	// 	null,
+	// 	{ sort: { name: 1 } }
+	// ).skip(10);
+	// res.send(found);
 });
 
 module.exports = router;
