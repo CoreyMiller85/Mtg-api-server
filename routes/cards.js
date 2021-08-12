@@ -36,6 +36,7 @@ const getPagination = (page, size) => {
 
 router.get("/", async (req, res) => {
 	const { page, size, name } = req.query;
+	const q = name;
 	var condition = name
 		? {
 				name: { $regex: new RegExp(name), $options: "i" },
