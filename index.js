@@ -30,6 +30,7 @@ db.once("open", function () {
 });
 
 app.use(cors());
+app.use(express.json());
 
 async function getDownloadURI() {
 	// dropCollection();
@@ -109,7 +110,7 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/api/cards", cardsRoute);
-app.use("/users/", authRoutes);
+app.use("/auth/", authRoutes);
 
 app.get("/api/search", async (req, res) => {
 	console.log(req.query);
