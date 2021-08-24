@@ -33,7 +33,7 @@ app.use(cors());
 app.use(express.json());
 
 async function getDownloadURI() {
-	// dropCollection();
+	dropCollection();
 	console.log("getting uri for download");
 	const res = await axios.get("https://api.scryfall.com/bulk-data");
 	const downloadURI = res.data.data[2].download_uri;

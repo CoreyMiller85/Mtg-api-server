@@ -1,9 +1,13 @@
 const { Router } = require("express");
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 const router = Router();
 
-router.get("/login", async (req, res) => {
-	res.send("login GET");
+router.post("/login", async (req, res) => {
+	const { email, password } = req.body;
+	const query = await User.findOne({ email: email });
+	const match = await bcrypt.compare(password, query.password);
+	res.send(match);
 });
 // router.get("/signup", async (req, res) => {
 // 	res.send("signup GET");
