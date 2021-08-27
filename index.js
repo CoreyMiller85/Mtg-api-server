@@ -12,6 +12,7 @@ const https = require("https");
 const { parse } = require("dotenv");
 const cardsRoute = require("./routes/cards");
 const authRoutes = require("./routes/authRoutes");
+const deckRoutes = require("./routes/deckRoutes");
 
 require("dotenv").config();
 
@@ -33,7 +34,7 @@ app.use(cors());
 app.use(express.json());
 
 async function getDownloadURI() {
-	dropCollection();
+	// dropCollection();
 	console.log("getting uri for download");
 	const res = await axios.get("https://api.scryfall.com/bulk-data");
 	const downloadURI = res.data.data[2].download_uri;
@@ -76,8 +77,6 @@ const downloadCards = async (urlToPrint) => {
 	});
 };
 
-// getDownloadURI();
-
 const parseCards = async () => {
 	console.log("Parsing Cards");
 	let count = 0;
@@ -98,6 +97,8 @@ const parseCards = async () => {
 	});
 };
 
+// getDownloadURI();
+
 /* ROUTES */
 
 app.get("/", async (req, res) => {
@@ -111,6 +112,7 @@ app.get("/", async (req, res) => {
 
 app.use("/api/cards", cardsRoute);
 app.use("/auth/", authRoutes);
+app.use("/decks/", deckRoutes);
 
 app.get("/api/search", async (req, res) => {
 	console.log(req.query);

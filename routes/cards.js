@@ -50,7 +50,6 @@ router.get("/", async (req, res) => {
 
 	Card.paginate(condition, { offset, limit })
 		.then((data) => {
-			console.log(data);
 			res.send({
 				totalItems: data.totalDocs,
 				cards: data.docs,

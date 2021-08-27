@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
 				username: query.username,
 				email: query.email,
 			},
-			"superseceretsquirell"
+			"supersecretSquirrel"
 		);
 
 		res.json(accessToken);
@@ -34,21 +34,21 @@ router.post("/login", async (req, res) => {
 	}
 });
 
-// router.get("/signup", async (req, res) => {
-// 	res.send("signup GET");
-// });
-
 router.post("/signup", async (req, res) => {
 	try {
 		const { name, email, password } = req.body;
 		const checkForExsisting = await User.find({ email: email });
+		if (checkForExsisting) {
+			throw Error;
+		}
 		const newUser = await new User({
 			name,
 			email,
 			password,
 		});
-		const saveUser = await newUser.save();
-		res.json(saveUser);
+		console.log(newUser);
+		newUser.save();
+		res.json(newUser);
 	} catch (error) {
 		res.send(error);
 	}
