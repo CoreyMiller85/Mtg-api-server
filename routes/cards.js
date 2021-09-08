@@ -75,6 +75,40 @@ router.get("/", async (req, res) => {
 	// res.send(found);
 });
 
+router.get("/testcards", (req, res) => {
+	const page = 1;
+	const size = 2;
+	const name = "Abbot of Keral Keep";
+	var condition = name
+		? {
+				// name: { $regex: new RegExp(name), $options: "i" },
+				// booster: "true",
+				// promo: "false",
+				// nonfoil: "true",
+				colors: { $all: ["R"] },
+				keywords: "Prowess",
+		  }
+		: {};
+
+	const { limit, offset } = getPagination(page, size);
+
+	Card.paginate(condition, { offset, limit })
+		.then((data) => {
+			res.send({
+				totalItems: data.totalDocs,
+				cards: data.docs,
+				totalPages: data.totalPages,
+				currentPage: data.page - 1,
+			});
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					err.message || "Some error occurred while retrieving tutorials.",
+			});
+		});
+});
+
 module.exports = router;
 
 // let limit = Math.abs(req.query.limit) || 100;
