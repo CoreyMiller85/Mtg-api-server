@@ -137,8 +137,29 @@ router.get("/q", async (req, res) => {
 		// 'common', 'uncommon', 'rare', 'mythic'
 		filters.rarity = query.rarity;
 	}
-	const response = await Card.find(filters);
-	res.json(response);
+
+	// only show one type of the same card
+	filters.booster = "true";
+	filters.promo = "false";
+	filters.nonfoil = "true";
+
+	const { limit, offset } = getPagination(req.query.page, req.query.size);
+
+	Card.paginate(filters, { offset, limit })
+		.then((data) => {
+			res.send({
+				totalItems: data.totalDocs,
+				cards: data.docs,
+				totalPages: data.totalPages,
+				currentPage: data.page - 1,
+			});
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					err.message || "Some error occurred while retrieving tutorials.",
+			});
+		});
 });
 
 module.exports = router;
