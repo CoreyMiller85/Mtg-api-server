@@ -85,8 +85,8 @@ router.get("/testcards", (req, res) => {
 				// booster: "true",
 				// promo: "false",
 				// nonfoil: "true",
-				colors: { $all: ["R"] },
-				keywords: "Prowess",
+				// colors: { $all: ["R"] },
+				// keywords: "Prowess",
 		  }
 		: {};
 
@@ -107,6 +107,25 @@ router.get("/testcards", (req, res) => {
 					err.message || "Some error occurred while retrieving tutorials.",
 			});
 		});
+});
+
+router.get("/q", async (req, res) => {
+	const search = req.query;
+	const response = await Card.find({
+		colors: { $all: search.colors },
+	}).countDocuments();
+	const response2 = await Card.find({
+		colors: { $all: search.colors },
+	})
+		.limit(2)
+		.skip(2);
+
+	const results = await {
+		count: response,
+		docs: response2,
+	};
+
+	res.json(results);
 });
 
 module.exports = router;
