@@ -110,22 +110,28 @@ router.get("/testcards", (req, res) => {
 });
 
 router.get("/q", async (req, res) => {
-	const search = req.query;
-	const response = await Card.find({
-		colors: { $all: search.colors },
-	}).countDocuments();
-	const response2 = await Card.find({
-		colors: { $all: search.colors },
-	})
-		.limit(2)
-		.skip(2);
-
-	const results = await {
-		count: response,
-		docs: response2,
-	};
-
-	res.json(results);
+	const query = req.query;
+	const name = req.query.name;
+	const legalities = req.query.legalities;
+	const filters = {};
+	if (query.name) {
+		filters.name = {
+			$regex: new RegExp(name),
+			$options: "i",
+		};
+	}
+	if (query.legalities) {
+		const querySplit = query.legalities.split(",");
+		querySplit.map((q) => {
+			const queryString = `legalities.${q}`;
+			filters[queryString] = "legal";
+		});
+	}
+	if (query.colors) {
+		filters.colors = query.colors.split("");
+	}
+	const response = await Card.find(filters);
+	res.json(response);
 });
 
 module.exports = router;
