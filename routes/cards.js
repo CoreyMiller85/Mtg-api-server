@@ -128,7 +128,13 @@ router.get("/q", async (req, res) => {
 		});
 	}
 	if (query.colors) {
+		//["W","U","B","R","G"]
+		//NOT WORKING CORRECTLY
 		filters.colors = query.colors.split("");
+	}
+	if (query.rarity) {
+		// 'common', 'uncommon', 'rare', 'mythic'
+		filters.rarity = query.rarity;
 	}
 	const response = await Card.find(filters);
 	res.json(response);
