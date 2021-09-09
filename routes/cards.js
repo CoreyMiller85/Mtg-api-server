@@ -130,7 +130,8 @@ router.get("/q", async (req, res) => {
 	if (query.colors) {
 		//["W","U","B","R","G"]
 		//NOT WORKING CORRECTLY
-		filters.colors = query.colors.split("");
+		thing = query.colors.split("");
+		filters.colors = { $all: thing };
 	}
 	if (query.rarity) {
 		// 'common', 'uncommon', 'rare', 'mythic'
