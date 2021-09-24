@@ -138,11 +138,6 @@ router.get("/q", async (req, res) => {
 		filters.rarity = query.rarity;
 	}
 
-	// only show one type of the same card
-	filters.booster = "true";
-	filters.promo = "false";
-	filters.nonfoil = "true";
-
 	const { limit, offset } = getPagination(req.query.page, req.query.size);
 
 	Card.paginate(filters, { offset, limit })
