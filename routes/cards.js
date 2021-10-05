@@ -34,17 +34,40 @@ const getPagination = (page, size) => {
 // 		});
 // });
 
-router.get("/", async (req, res) => {
+router.get("/q", async (req, res) => {
 	const { page, size, name } = req.query;
-	const q = name;
-	var condition = name
-		? {
-				name: { $regex: new RegExp(name), $options: "i" },
-				booster: "true",
-				promo: "false",
-				nonfoil: "true",
-		  }
-		: {};
+	var condition = {};
+	if (req.query.name) {
+		condition["name"] = {
+			$regex: new RegExp(name),
+			$options: "i",
+		};
+	}
+	if (req.query.id) {
+		condition["_id"] = req.query.id;
+	}
+	if (req.query.colors) {
+		condition["colors"] = req.query.colors.toUpperCase().split("");
+	}
+	// if (req.query.colors) {
+	// 	condition["colors"] = colors.split("");
+	// }
+
+	condition.promo = false;
+	condition["set_type"] = "expansion";
+	condition["booster"] = true;
+	console.log(condition);
+
+	// var condition = name
+	//  ? {
+	//    name: {
+	//      $regex: new RegExp(name),
+	//      $options: "i",
+	//     },
+
+	//     booster: "true",
+	//   }
+	// 	: {};
 
 	const { limit, offset } = getPagination(page, size);
 
