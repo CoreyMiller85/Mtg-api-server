@@ -20,7 +20,7 @@ let newData = [];
 
 mongoose.connect(
 	`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}${process.env.DB_HOST}`,
-	{ useNewUrlParser: true, useUnifiedTopology: true }
+	{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 );
 
 const db = mongoose.connection;

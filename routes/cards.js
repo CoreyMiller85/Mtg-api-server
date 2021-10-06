@@ -11,29 +11,6 @@ const getPagination = (page, size) => {
 	return { limit, offset };
 };
 
-// router.get("/", async (req, res) => {
-// 	const { page, size, name } = req.query;
-// 	var condition = {};
-
-// 	const { limit, offset } = getPagination(page, size);
-
-// 	Card.paginate(condition, { offset, limit })
-// 		.then((data) => {
-// 			res.send({
-// 				totalItems: data.totalDocs,
-// 				cards: data.docs,
-// 				totalPages: data.totalPages,
-// 				currentPage: data.page - 1,
-// 			});
-// 		})
-// 		.catch((err) => {
-// 			res.status(500).send({
-// 				message:
-// 					err.message || "Some error occurred while retrieving tutorials.",
-// 			});
-// 		});
-// });
-
 router.get("/q", async (req, res) => {
 	const { page, size, name } = req.query;
 	var condition = {};
@@ -49,72 +26,43 @@ router.get("/q", async (req, res) => {
 	if (req.query.colors) {
 		condition["colors"] = req.query.colors.toUpperCase().split("");
 	}
-	// if (req.query.colors) {
-	// 	condition["colors"] = colors.split("");
-	// }
+	if (req.query.legalities) {
+		const querySplit = req.query.legalities.split(",");
+		querySplit.map((q) => {
+			const queryString = `legalities.${q}`;
+			condition[queryString] = "legal";
+		});
+	}
+	if (req.query.rarity) {
+		condition["rarity"] = req.query.rarity;
+	}
+
 	condition["set_type"] = { $in: ["expansion", "masters", "core"] };
 	condition.promo = false;
 	condition["booster"] = true;
 	console.log(condition);
 
-	// var condition = name
-	//  ? {
-	//    name: {
-	//      $regex: new RegExp(name),
-	//      $options: "i",
-	//     },
-
-	//     booster: "true",
-	//   }
-	// 	: {};
-
 	const { limit, offset } = getPagination(page, size);
 
-	Card.paginate(condition, { offset, limit })
-		.then((data) => {
-			res.send({
-				totalItems: data.totalDocs,
-				cards: data.docs,
-				totalPages: data.totalPages,
-				currentPage: data.page - 1,
-			});
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message:
-					err.message || "Some error occurred while retrieving tutorials.",
-			});
-		});
+	const options = {
+		limit,
+		offset,
+		sort: {
+			cmc: 1,
+		},
+		select: {
+			name: 1,
+			image_uris: {
+				large: 1,
+			},
+			colors: 1,
+			mana_cost: 1,
+			rarity: 1,
+			legalities: 1,
+		},
+	};
 
-	// let found = await Card.find(
-	// 	{
-	// 		name: { $regex: new RegExp(req.params.name), $options: "i" },
-	// 		booster: true,
-	// 	},
-	// 	null,
-	// 	{ sort: { name: 1 } }
-	// ).skip(10);
-	// res.send(found);
-});
-
-router.get("/testcards", (req, res) => {
-	const page = 1;
-	const size = 2;
-	const name = "Abbot of Keral Keep";
-	var condition = name
-		? {
-				// name: { $regex: new RegExp(name), $options: "i" },
-				// booster: "true",
-				// promo: "false",
-				// nonfoil: "true",
-				// colors: { $all: ["R"] },
-				// keywords: "Prowess",
-		  }
-		: {};
-
-	const { limit, offset } = getPagination(page, size);
-
-	Card.paginate(condition, { offset, limit })
+	Card.paginate(condition, options)
 		.then((data) => {
 			res.send({
 				totalItems: data.totalDocs,
@@ -180,11 +128,3 @@ router.get("/q", async (req, res) => {
 });
 
 module.exports = router;
-
-// let limit = Math.abs(req.query.limit) || 100;
-// 	let page = (Math.abs(req.query.page) || 1) - 1;
-// 	const results = await Card.findAll()
-// 		.limit(limit)
-// 		.skip(limit * page);
-// 	console.log(results);
-// 	res.send(results);
