@@ -52,9 +52,8 @@ router.get("/q", async (req, res) => {
 	// if (req.query.colors) {
 	// 	condition["colors"] = colors.split("");
 	// }
-
+	condition["set_type"] = { $in: ["expansion", "masters", "core"] };
 	condition.promo = false;
-	condition["set_type"] = "expansion";
 	condition["booster"] = true;
 	console.log(condition);
 
