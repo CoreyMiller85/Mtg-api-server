@@ -24,7 +24,9 @@ router.get("/q", async (req, res) => {
 		condition["_id"] = req.query.id;
 	}
 	if (req.query.colors) {
-		condition["colors"] = req.query.colors.toUpperCase().split("");
+		// BGRUW is the color order.
+		colorsList = req.query.colors.toUpperCase().split(",");
+		condition.colors = { $all: colorsList };
 	}
 	if (req.query.legalities) {
 		const querySplit = req.query.legalities.split(",");
@@ -48,12 +50,13 @@ router.get("/q", async (req, res) => {
 		limit,
 		offset,
 		sort: {
+			name: 1,
 			cmc: 1,
 		},
 		select: {
 			name: 1,
 			image_uris: {
-				large: 1,
+				normal: 1,
 			},
 			colors: 1,
 			mana_cost: 1,
