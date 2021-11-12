@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const Card = require("../models/Card");
-const mongoosePaginate = require("mongoose-paginate-v2");
 
 const router = Router();
 
@@ -128,6 +127,36 @@ router.get("/q", async (req, res) => {
 					err.message || "Some error occurred while retrieving tutorials.",
 			});
 		});
+});
+
+router.get("/testunique", async (req, res) => {
+	const results = await Card.aggregate([
+		{
+			$match: {
+				name: {
+					$regex: new RegExp("jace"),
+					$options: "i",
+				},
+			},
+		},
+		{
+			$group: {
+				_id: "$oracle_id",
+			},
+		},
+	]);
+
+	// Takes in array of Id's and queries for card data
+	const someFunction = (myArray) => {
+		const promises = myArray.map(async (myValue) => {
+			const thing = await Card.find({ oracle_id: myValue._id });
+			return thing;
+		});
+		return Promise.all(promises);
+	};
+
+	const endResults = await someFunction(results);
+	res.send(endResults);
 });
 
 module.exports = router;
