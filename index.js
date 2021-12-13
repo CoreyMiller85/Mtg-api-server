@@ -13,6 +13,7 @@ const { parse } = require("dotenv");
 const cardsRoute = require("./routes/cards");
 const authRoutes = require("./routes/authRoutes");
 const deckRoutes = require("./routes/deckRoutes");
+const testRoutes = require("./routes/testRoute");
 
 require("dotenv").config();
 
@@ -37,7 +38,7 @@ async function getDownloadURI() {
 	// dropCollection();
 	console.log("getting uri for download");
 	const res = await axios.get("https://api.scryfall.com/bulk-data");
-	const downloadURI = res.data.data[2].download_uri;
+	const downloadURI = res.data.data[0].download_uri;
 	downloadCards(downloadURI);
 }
 
@@ -113,6 +114,7 @@ app.get("/", async (req, res) => {
 app.use("/api/cards", cardsRoute);
 app.use("/auth/", authRoutes);
 app.use("/decks/", deckRoutes);
+app.use("/test/", testRoutes);
 
 app.get("/api/search", async (req, res) => {
 	console.log(req.query);
