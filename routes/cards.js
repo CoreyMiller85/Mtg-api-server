@@ -56,16 +56,16 @@ router.get("/test", async (req, res) => {
 			name: 1,
 			cmc: 1,
 		},
-		select: {
-			name: 1,
-			image_uris: {
-				normal: 1,
-			},
-			colors: 1,
-			mana_cost: 1,
-			rarity: 1,
-			legalities: 1,
-		},
+		// select: {
+		// 	name: 1,
+		// 	image_uris: {
+		// 		normal: 1,
+		// 	},
+		// 	colors: 1,
+		// 	mana_cost: 1,
+		// 	rarity: 1,
+		// 	legalities: 1,
+		// },
 	};
 	/* END OF TEST CODE */
 
@@ -73,7 +73,7 @@ router.get("/test", async (req, res) => {
 
 	const result = await Card.find(condition)
 		.skip(offset)
-		.sort({ cmc: 1 })
+		.sort({ name: 1 })
 		.limit(limit)
 		.select(options.select);
 
