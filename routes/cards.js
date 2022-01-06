@@ -9,6 +9,10 @@ const getPagination = (page, size) => {
   return { limit, offset };
 };
 
+router.post('/posttest/', (req, res) => {
+  res.send(req.body);
+});
+
 router.get('/singlecard/:id', async (req, res) => {
   try {
     let Id = req.params.id;
@@ -20,9 +24,10 @@ router.get('/singlecard/:id', async (req, res) => {
     res.status(400).json(err);
   }
 });
+
 // TESTING FOR NEW ALGO for search field.
 router.get('/test', async (req, res) => {
-  const limit = req.query.limit || 10;
+  const limit = req.query.limit || 12;
   const page = req.query.page || 1;
   const offset = limit * (page - 1);
 
