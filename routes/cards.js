@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const Card = require('../models/Card');
+const querystring = require('querystring');
 
 const router = Router();
 
@@ -10,7 +11,7 @@ const getPagination = (page, size) => {
 };
 
 router.post('/posttest/', (req, res) => {
-  res.send(req.body);
+  res.send(req.query);
 });
 
 router.get('/singlecard/:id', async (req, res) => {
@@ -44,7 +45,8 @@ router.get('/test', async (req, res) => {
   }
   if (req.query.colors) {
     // BGRUW is the color order.
-    colorsList = req.query.colors.toUpperCase().split('');
+    colorsList = req.query.colors.toUpperCase().split(',');
+    console.log(colorsList);
     condition.colors = { $all: colorsList };
   }
   if (req.query.legalities) {
@@ -55,7 +57,11 @@ router.get('/test', async (req, res) => {
     });
   }
   if (req.query.rarity) {
-    condition['rarity'] = req.query.rarity;
+    let rarityList = req.query.rarity.toLowerCase().split(',');
+    condition['rarity'] = { $in: rarityList };
+  }
+  if (req.query.set) {
+    condition['set'] = req.query.set.toLowerCase();
   }
 
   const cardFilters = {
@@ -66,7 +72,7 @@ router.get('/test', async (req, res) => {
 
   // Combines condition with filters for cleaner code
   condition = { ...condition, ...cardFilters };
-
+  console.log(condition);
   const options = {
     sort: {
       name: 1,
